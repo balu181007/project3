@@ -1,0 +1,1 @@
+EngineerOS is an offline-first career navigation platform for engineering students. It provides structured roadmaps, progress tracking, skill assessments, certification recommendations, internship readiness scoring, project ideas, and curated learning resources to help students become industry-ready professionals.
