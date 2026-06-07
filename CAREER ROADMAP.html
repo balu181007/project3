@@ -1,0 +1,474 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:#f8f9fa;color:#0f172a;min-height:100vh}
+a{text-decoration:none}
+input,button{font-family:inherit}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:99px}
+.prog-bar{height:6px;background:#e2e8f0;border-radius:99px;overflow:hidden}
+.prog-fill{height:100%;border-radius:99px;transition:width .6s ease}
+.card{background:#fff;border:1px solid #e2e8f0;border-radius:12px;padding:20px}
+.btn-primary{background:#2563eb;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-weight:600;font-size:14px;cursor:pointer}
+.btn-ghost{background:transparent;color:#64748b;border:none;border-radius:8px;padding:6px 14px;font-size:13px;cursor:pointer}
+.btn-ghost.active{background:#f0f5ff;color:#2563eb;font-weight:600}
+.tag{background:#f1f5f9;color:#64748b;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:500}
+.pill{border:none;border-radius:20px;padding:6px 14px;font-size:13px;cursor:pointer;transition:all .15s}
+.topic-card{border:1px solid #e2e8f0;border-radius:12px;padding:16px;background:#fff;transition:border-color .2s}
+.topic-card:hover{border-color:#bfdbfe}
+.resource-link{padding:6px 12px;background:#f0f5ff;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#1d4ed8;font-weight:500;cursor:pointer}
+.resource-link:hover{background:#dbeafe}
+.opt-btn{padding:12px 14px;border-radius:8px;text-align:left;cursor:pointer;font-size:14px;line-height:1.4;width:100%;font-family:inherit;transition:all .12s}
+.opt-btn:hover{border-color:#93c5fd !important;background:#f0f5ff !important}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .25s ease}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<div id="root"></div>
+
+<script>
+const PATHS=[{id:"fullstack",title:"Full Stack Developer",tagline:"Build complete web apps, database to UI",color:"#2563eb",icon:"⬡",years:[{year:1,theme:"Foundation",topics:[{id:"fs-y1-t1",title:"Programming with Python",why:"Python teaches you how computers think — loops, functions, data structures. Every other technology is easier once you understand this.",resources:[{label:"Python Docs",url:"https://docs.python.org/3/tutorial/"},{label:"CS50P (free)",url:"https://cs50.harvard.edu/python/"}],projectIdea:"Build a CLI task manager",estimatedWeeks:6},{id:"fs-y1-t2",title:"Git & GitHub",why:"Every company uses version control. Not knowing Git is like not knowing how to save a file.",resources:[{label:"Git Docs",url:"https://git-scm.com/doc"},{label:"GitHub Skills",url:"https://skills.github.com/"}],projectIdea:"Version-control all your projects",estimatedWeeks:1},{id:"fs-y1-t3",title:"HTML & CSS Fundamentals",why:"The skeleton and skin of every website. You cannot call yourself a web developer without this.",resources:[{label:"MDN HTML",url:"https://developer.mozilla.org/en-US/docs/Learn/HTML"},{label:"CSS Tricks",url:"https://css-tricks.com/guides/"}],projectIdea:"Build a personal portfolio page",estimatedWeeks:3},{id:"fs-y1-t4",title:"JavaScript Basics",why:"The only language that runs natively in browsers. Makes web pages interactive.",resources:[{label:"MDN JS",url:"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide"},{label:"javascript.info",url:"https://javascript.info/"}],projectIdea:"Build a to-do list app",estimatedWeeks:5}]},{year:2,theme:"Core Stack",topics:[{id:"fs-y2-t1",title:"Data Structures & Algorithms",why:"Companies like Google, Amazon test DSA in interviews. Solving problems efficiently is a core engineering skill.",resources:[{label:"NeetCode",url:"https://neetcode.io/"},{label:"LeetCode",url:"https://leetcode.com/"}],projectIdea:"Solve 50 LeetCode problems",estimatedWeeks:10},{id:"fs-y2-t2",title:"React.js",why:"Powers Facebook, Instagram, Airbnb, Netflix UI. The most in-demand frontend framework.",resources:[{label:"React Docs",url:"https://react.dev/learn"},{label:"Scrimba React",url:"https://scrimba.com/learn/learnreact"}],projectIdea:"Build a weather app with API",estimatedWeeks:6},{id:"fs-y2-t3",title:"Node.js & Express",why:"JavaScript on the server. Lets you build REST APIs — backbone of every modern web application.",resources:[{label:"Node Docs",url:"https://nodejs.org/en/docs/"},{label:"Express Guide",url:"https://expressjs.com/en/guide/routing.html"}],projectIdea:"Build a REST API for a blog",estimatedWeeks:5},{id:"fs-y2-t4",title:"SQL & PostgreSQL",why:"80% of companies store data in relational databases. SQL is the language that talks to them.",resources:[{label:"PG Tutorial",url:"https://www.postgresqltutorial.com/"},{label:"SQLZoo",url:"https://sqlzoo.net/"}],projectIdea:"Design schema for an e-commerce DB",estimatedWeeks:4}]},{year:3,theme:"Production",topics:[{id:"fs-y3-t1",title:"TypeScript",why:"Catches bugs before production. Every serious company uses it.",resources:[{label:"TS Handbook",url:"https://www.typescriptlang.org/docs/handbook/intro.html"},{label:"Total TypeScript",url:"https://www.totaltypescript.com/"}],projectIdea:"Convert a React project to TypeScript",estimatedWeeks:3},{id:"fs-y3-t2",title:"System Design Basics",why:"Senior engineers think in systems. Understanding scale separates juniors from seniors.",resources:[{label:"System Design Primer",url:"https://github.com/donnemartin/system-design-primer"},{label:"ByteByteGo",url:"https://blog.bytebytego.com/"}],projectIdea:"Design a Twitter-like feed on paper",estimatedWeeks:4},{id:"fs-y3-t3",title:"Docker & CI/CD",why:"Your app must be deployable. Docker makes apps run identically everywhere.",resources:[{label:"Docker Docs",url:"https://docs.docker.com/get-started/"},{label:"GitHub Actions",url:"https://docs.github.com/en/actions"}],projectIdea:"Dockerize your Node API + GitHub Actions",estimatedWeeks:3},{id:"fs-y3-t4",title:"Internship Project",why:"One solid internship project you can defend is worth 10 tutorials.",resources:[{label:"InternShala",url:"https://internshala.com/"},{label:"LinkedIn Jobs",url:"https://www.linkedin.com/jobs/"}],projectIdea:"Full-stack CRUD app deployed on Vercel",estimatedWeeks:8}]},{year:4,theme:"Placement",topics:[{id:"fs-y4-t1",title:"Advanced DSA & Interview Prep",why:"Most product companies test DSA. You need 150+ problems solved.",resources:[{label:"NeetCode 150",url:"https://neetcode.io/practice"},{label:"Blind 75",url:"https://leetcode.com/"}],projectIdea:"5 mock interviews on Pramp",estimatedWeeks:12},{id:"fs-y4-t2",title:"Portfolio & Resume",why:"Your CV is marketing. Bad formatting loses you jobs before the interview.",resources:[{label:"Resume Worded",url:"https://resumeworded.com/"},{label:"Jake's Resume",url:"https://www.overleaf.com/latex/templates/jakes-resume/syzfjbzwjncs"}],projectIdea:"3 polished GitHub repos + portfolio",estimatedWeeks:2},{id:"fs-y4-t3",title:"Behavioural Interviews (STAR)",why:"Technical skills get you the interview. Soft skills get you the offer.",resources:[{label:"STAR Method",url:"https://www.themuse.com/advice/star-interview-method"},{label:"Glassdoor Tips",url:"https://www.glassdoor.com/blog/guide/star-interview-method/"}],projectIdea:"Write STAR answers for 10 questions",estimatedWeeks:2},{id:"fs-y4-t4",title:"Open Source Contributions",why:"Contributing to real codebases proves you can improve others' code.",resources:[{label:"First Contributions",url:"https://firstcontributions.github.io/"},{label:"Good First Issues",url:"https://goodfirstissue.dev/"}],projectIdea:"Merge 2 PRs in open-source",estimatedWeeks:4}]}]},{id:"aiml",title:"AI / ML Engineer",tagline:"Build intelligent systems that learn from data",color:"#7c3aed",icon:"◈",years:[{year:1,theme:"Math & Code",topics:[{id:"ai-y1-t1",title:"Python for Data Science",why:"Python is the language of AI. NumPy, Pandas, Matplotlib — every AI library speaks Python.",resources:[{label:"Python Docs",url:"https://docs.python.org/3/"},{label:"Kaggle Python",url:"https://www.kaggle.com/learn/python"}],projectIdea:"Analyse a public CSV with Pandas",estimatedWeeks:5},{id:"ai-y1-t2",title:"Linear Algebra",why:"Matrices are how AI represents data. Without this, ML is a black box you cannot debug.",resources:[{label:"3Blue1Brown LA",url:"https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab"},{label:"Khan Academy",url:"https://www.khanacademy.org/math/linear-algebra"}],projectIdea:"Implement matrix multiplication from scratch",estimatedWeeks:4},{id:"ai-y1-t3",title:"Statistics & Probability",why:"Machine learning is applied statistics. Mean, variance, distributions — the language of uncertainty.",resources:[{label:"StatQuest",url:"https://www.youtube.com/c/joshstarmer"},{label:"Seeing Theory",url:"https://seeing-theory.brown.edu/"}],projectIdea:"A/B test two simulations",estimatedWeeks:4},{id:"ai-y1-t4",title:"Git & Jupyter Notebooks",why:"Reproducibility is critical in ML. Notebooks are how data scientists document experiments.",resources:[{label:"Jupyter Docs",url:"https://docs.jupyter.org/en/latest/"},{label:"GitHub Skills",url:"https://skills.github.com/"}],projectIdea:"Create a documented analysis notebook",estimatedWeeks:1}]},{year:2,theme:"ML Core",topics:[{id:"ai-y2-t1",title:"Classical ML (Scikit-learn)",why:"Linear regression, decision trees, SVMs — the baseline every deep learning model is measured against.",resources:[{label:"Scikit-learn Docs",url:"https://scikit-learn.org/stable/user_guide.html"},{label:"Andrew Ng Course",url:"https://www.coursera.org/learn/machine-learning"}],projectIdea:"Build a house price predictor",estimatedWeeks:6},{id:"ai-y2-t2",title:"Deep Learning with PyTorch",why:"PyTorch is the dominant framework. Used by Meta, Tesla, OpenAI internally.",resources:[{label:"PyTorch Tutorials",url:"https://pytorch.org/tutorials/"},{label:"Fast.ai",url:"https://course.fast.ai/"}],projectIdea:"Train a digit classifier on MNIST",estimatedWeeks:7},{id:"ai-y2-t3",title:"Data Wrangling",why:"80% of ML work is cleaning and transforming data before training.",resources:[{label:"Kaggle Data Cleaning",url:"https://www.kaggle.com/learn/data-cleaning"},{label:"Pandas Docs",url:"https://pandas.pydata.org/docs/"}],projectIdea:"Clean and engineer features from Kaggle",estimatedWeeks:4},{id:"ai-y2-t4",title:"SQL for ML Engineers",why:"Data lives in databases. You need SQL to extract and understand it.",resources:[{label:"Mode SQL",url:"https://mode.com/sql-tutorial/"},{label:"SQLZoo",url:"https://sqlzoo.net/"}],projectIdea:"Query a database, export for ML pipeline",estimatedWeeks:3}]},{year:3,theme:"Specialisation",topics:[{id:"ai-y3-t1",title:"Natural Language Processing",why:"LLMs, translation, sentiment analysis — NLP is the hottest subfield in AI.",resources:[{label:"Hugging Face Course",url:"https://huggingface.co/learn/nlp-course/"},{label:"Stanford CS224N",url:"https://web.stanford.edu/class/cs224n/"}],projectIdea:"Fine-tune a model for sentiment classification",estimatedWeeks:6},{id:"ai-y3-t2",title:"MLOps Fundamentals",why:"Training a model is 20% of the job. Deploying and monitoring it is the other 80%.",resources:[{label:"MLflow Docs",url:"https://mlflow.org/docs/latest/index.html"},{label:"Made With ML",url:"https://madewithml.com/"}],projectIdea:"Deploy an ML model as a FastAPI endpoint",estimatedWeeks:5},{id:"ai-y3-t3",title:"Computer Vision Basics",why:"Object detection, face recognition — vision AI is in every phone and car today.",resources:[{label:"CS231n Stanford",url:"http://cs231n.stanford.edu/"},{label:"OpenCV Docs",url:"https://docs.opencv.org/"}],projectIdea:"Real-time object detector with webcam",estimatedWeeks:5},{id:"ai-y3-t4",title:"Research Paper Reading",why:"AI moves fast. Reading papers keeps you ahead.",resources:[{label:"ArXiv",url:"https://arxiv.org/list/cs.AI/recent"},{label:"Papers With Code",url:"https://paperswithcode.com/"}],projectIdea:"Reproduce one paper's experiment",estimatedWeeks:4}]},{year:4,theme:"Industry Ready",topics:[{id:"ai-y4-t1",title:"LLM APIs & Prompt Engineering",why:"Most AI engineering jobs involve LLM APIs. This is the most immediately hireable skill.",resources:[{label:"OpenAI Docs",url:"https://platform.openai.com/docs/"},{label:"Anthropic Docs",url:"https://docs.anthropic.com/"}],projectIdea:"Build an AI-powered study assistant",estimatedWeeks:3},{id:"ai-y4-t2",title:"Capstone ML Project",why:"One end-to-end project — data, training, deployment — is worth more than 10 tutorials.",resources:[{label:"Kaggle Competitions",url:"https://www.kaggle.com/competitions"},{label:"DrivenData",url:"https://www.drivendata.org/"}],projectIdea:"Train + deploy a model on a real problem",estimatedWeeks:10},{id:"ai-y4-t3",title:"ML Interview Prep",why:"ML interviews test DSA AND ML theory. Know gradient descent, overfitting cold.",resources:[{label:"ML Interviews Book",url:"https://huyenchip.com/ml-interviews-book/"},{label:"Interview Query",url:"https://www.interviewquery.com/"}],projectIdea:"Answer 50 ML interview questions in writing",estimatedWeeks:6},{id:"ai-y4-t4",title:"DSA for Tech Interviews",why:"Even ML engineers get LeetCode-tested. You cannot skip this.",resources:[{label:"NeetCode 150",url:"https://neetcode.io/practice"},{label:"LeetCode",url:"https://leetcode.com/"}],projectIdea:"Solve 75 problems across key patterns",estimatedWeeks:8}]}]},{id:"datascience",title:"Data Scientist",tagline:"Turn raw data into insights that drive decisions",color:"#059669",icon:"◎",years:[{year:1,theme:"Data Thinking",topics:[{id:"ds-y1-t1",title:"Python + Pandas",why:"Pandas is the Excel of programming. Every data scientist uses it daily.",resources:[{label:"Kaggle Pandas",url:"https://www.kaggle.com/learn/pandas"},{label:"Pandas Docs",url:"https://pandas.pydata.org/docs/"}],projectIdea:"Analyse movie ratings from Kaggle",estimatedWeeks:5},{id:"ds-y1-t2",title:"Data Visualisation",why:"Insights are useless if you cannot communicate them. A misleading chart can cost millions.",resources:[{label:"Matplotlib Docs",url:"https://matplotlib.org/stable/tutorials/index.html"},{label:"Seaborn Tutorial",url:"https://seaborn.pydata.org/tutorial.html"}],projectIdea:"Create 10 meaningful charts from one dataset",estimatedWeeks:3},{id:"ds-y1-t3",title:"Statistics Fundamentals",why:"Every metric, every A/B test, every model evaluation is built on statistics.",resources:[{label:"StatQuest",url:"https://www.youtube.com/c/joshstarmer"},{label:"Think Stats",url:"https://greenteapress.com/thinkstats2/html/index.html"}],projectIdea:"Test a hypothesis on a real dataset",estimatedWeeks:4},{id:"ds-y1-t4",title:"Excel & Google Sheets",why:"Most business data analysis still happens in spreadsheets. Ignoring this looks junior.",resources:[{label:"Excel for Data Analysis",url:"https://www.coursera.org/learn/excel-data-analysis"},{label:"Google Sheets Functions",url:"https://support.google.com/docs/table/25273"}],projectIdea:"Build a sales dashboard in Sheets",estimatedWeeks:2}]},{year:2,theme:"Analysis",topics:[{id:"ds-y2-t1",title:"SQL for Data Analysis",why:"SQL is non-negotiable. You cannot analyse data you cannot query.",resources:[{label:"Mode SQL Tutorial",url:"https://mode.com/sql-tutorial/"},{label:"StrataScratch",url:"https://platform.stratascratch.com/"}],projectIdea:"Solve 30 SQL interview questions",estimatedWeeks:5},{id:"ds-y2-t2",title:"Machine Learning Fundamentals",why:"Data scientists build predictive models. Regression, classification, clustering — core tools.",resources:[{label:"Scikit-learn Guide",url:"https://scikit-learn.org/stable/user_guide.html"},{label:"Kaggle ML Course",url:"https://www.kaggle.com/learn/intro-to-machine-learning"}],projectIdea:"Titanic survival prediction on Kaggle",estimatedWeeks:6},{id:"ds-y2-t3",title:"Exploratory Data Analysis",why:"EDA is how you understand data before modelling. Skipping leads to garbage models.",resources:[{label:"Kaggle EDA",url:"https://www.kaggle.com/code"},{label:"Towards Data Science",url:"https://towardsdatascience.com/"}],projectIdea:"Publish an EDA notebook on Kaggle",estimatedWeeks:4},{id:"ds-y2-t4",title:"Business Analytics Thinking",why:"Data science is about solving business problems. Most students skip this. Most get rejected.",resources:[{label:"Google Analytics Academy",url:"https://analytics.google.com/analytics/academy/"},{label:"Coursera Biz Analytics",url:"https://www.coursera.org/learn/analytics-excellence"}],projectIdea:"Write a 2-page business case from a dataset",estimatedWeeks:3}]},{year:3,theme:"Advanced",topics:[{id:"ds-y3-t1",title:"A/B Testing",why:"Every major product decision at Google, Amazon is validated by A/B tests.",resources:[{label:"Optimizely Guide",url:"https://www.optimizely.com/optimization-glossary/ab-testing/"},{label:"Udacity A/B Testing",url:"https://www.udacity.com/course/ab-testing--ud257"}],projectIdea:"Design and simulate an A/B test",estimatedWeeks:4},{id:"ds-y3-t2",title:"Time Series Analysis",why:"Sales forecasting, demand planning — time series is used in every industry.",resources:[{label:"Statsmodels",url:"https://www.statsmodels.org/stable/tsa.html"},{label:"Prophet Docs",url:"https://facebook.github.io/prophet/docs/quick_start.html"}],projectIdea:"Forecast monthly sales for retail dataset",estimatedWeeks:4},{id:"ds-y3-t3",title:"Data Engineering Basics",why:"A data scientist who cannot build pipelines depends on others for everything.",resources:[{label:"Apache Airflow",url:"https://airflow.apache.org/docs/"},{label:"dbt Docs",url:"https://docs.getdbt.com/docs/introduction"}],projectIdea:"Automated data pipeline with Python",estimatedWeeks:4},{id:"ds-y3-t4",title:"Tableau / Power BI",why:"Stakeholders don't read notebooks. They read dashboards.",resources:[{label:"Tableau Public",url:"https://public.tableau.com/app/discover"},{label:"Power BI Learning",url:"https://learn.microsoft.com/en-us/training/powerplatform/power-bi"}],projectIdea:"Interactive sales dashboard in Tableau",estimatedWeeks:3}]},{year:4,theme:"Job Ready",topics:[{id:"ds-y4-t1",title:"Capstone Analytics Project",why:"Interviewers want: question → data → analysis → insight → recommendation.",resources:[{label:"Kaggle Datasets",url:"https://www.kaggle.com/datasets"},{label:"UCI ML Repository",url:"https://archive.ics.uci.edu/"}],projectIdea:"Full EDA + model + dashboard on real data",estimatedWeeks:8},{id:"ds-y4-t2",title:"SQL Interview Mastery",why:"Data science interviews at Amazon, LinkedIn are 50% SQL. Not optional.",resources:[{label:"DataLemur SQL",url:"https://datalemur.com/questions"},{label:"LeetCode SQL 50",url:"https://leetcode.com/studyplan/top-sql-50/"}],projectIdea:"Solve all 50 LeetCode Top SQL questions",estimatedWeeks:4},{id:"ds-y4-t3",title:"Statistics Interview Prep",why:"Know p-values, hypothesis testing, confidence intervals cold.",resources:[{label:"DS Interview Handbook",url:"https://www.datascienceinterviewhandbook.com/"},{label:"Interview Query",url:"https://www.interviewquery.com/"}],projectIdea:"Answer 40 statistics questions in writing",estimatedWeeks:4},{id:"ds-y4-t4",title:"Communication & Storytelling",why:"The best data scientist loses to the one who can explain findings to a manager.",resources:[{label:"Storytelling with Data",url:"https://www.storytellingwithdata.com/blog"},{label:"HBR Data Storytelling",url:"https://hbr.org/2015/03/visualizations-that-really-work"}],projectIdea:"Present capstone to non-technical audience",estimatedWeeks:2}]}]}];
+
+const QUIZZES=[{id:"git-basics",title:"Git & GitHub",questions:[{q:"What does `git init` do?",opts:["Downloads repo from GitHub","Creates a new local Git repository","Adds all files to staging","Commits all changes"],ans:1,exp:"`git init` initialises a new empty Git repository. It creates a hidden `.git` folder that tracks all your changes."},{q:"Correct order to save changes?",opts:["commit → add → push","push → commit → add","add → commit → push","add → push → commit"],ans:2,exp:"First `git add` (stage), then `git commit` (save locally), then `git push` (upload to GitHub)."},{q:"What does `git clone <url>` do?",opts:["Creates a new branch","Copies a remote repo to your local machine","Merges two branches","Deletes a repository"],ans:1,exp:"`git clone` copies an existing remote repository to your local machine, including all history."},{q:"You made changes on `main` but should be on `feature`. Safest first step?",opts:["Delete main branch","Run `git stash` to save changes temporarily","Run `git reset --hard HEAD`","Run `git push --force`"],ans:1,exp:"`git stash` temporarily shelves your uncommitted changes so you can switch branches cleanly."},{q:"Difference between `git merge` and `git rebase`?",opts:["They are identical","`merge` creates a merge commit; `rebase` rewrites history linearly","`rebase` creates extra commits; `merge` removes them","`merge` only works locally"],ans:1,exp:"`merge` preserves full history. `rebase` replays your commits on top of another branch for a clean linear history."}]},{id:"ml-fundamentals",title:"ML Fundamentals",questions:[{q:"What is overfitting?",opts:["Model performs well on training data but poorly on new data","Model is too simple to learn","Training takes too long","Dataset is too small"],ans:0,exp:"Overfitting: model memorises training data instead of learning general patterns. It fails on unseen data — like memorising textbook answers but not solving new problems."},{q:"Purpose of a validation set?",opts:["To train the model","To tune hyperparameters and catch overfitting","To provide final unbiased evaluation","To augment training data"],ans:1,exp:"Training: model learns. Validation: you tweak settings. Test: the final exam — touch it once, at the very end."},{q:"Which algorithm draws a straight boundary between two classes?",opts:["K-Nearest Neighbours","Decision Tree","Logistic Regression","K-Means Clustering"],ans:2,exp:"Logistic Regression is a linear classifier. Despite the name, it is used for classification, not regression."},{q:"Model: 99% training accuracy, 62% test accuracy. What's happening?",opts:["The model is underfitting","The model is overfitting","Test data is corrupted","Model needs more epochs"],ans:1,exp:"Classic overfitting signature. Solutions: add regularisation (L1/L2), use dropout, get more data, or use a simpler model."},{q:"What does learning rate control in gradient descent?",opts:["How many neurons per layer","Step size toward the loss minimum","How many examples per batch","Number of epochs"],ans:1,exp:"Learning rate = step size. Too large: overshoots minimum. Too small: crawls forever. Key skill in ML engineering."}]},{id:"python-fundamentals",title:"Python Fundamentals",questions:[{q:"Output of `print(type([1, 2, 3]))`?",opts:["<class 'tuple'>","<class 'list'>","<class 'array'>","<class 'dict'>"],ans:1,exp:"`[1, 2, 3]` is a list literal. Lists use `[]`, tuples use `()`, dicts use `{}`."},{q:"What does `x = [1,2,3]; print(x[-1])` print?",opts:["1","None","3","Error"],ans:2,exp:"Negative indices count from the end. `x[-1]` is the last element."},{q:"What is a Python dictionary?",opts:["An ordered list","A collection of key-value pairs","A set of unique values","A file with Python defs"],ans:1,exp:"A dict stores key-value pairs: `{'name': 'Arjun', 'age': 20}`. Like a real dictionary — key to find value."},{q:"What does `[x**2 for x in range(5)]` produce?",opts:["Prints 0 1 4 9 16","[0, 1, 4, 9, 16]","A generator object","A syntax error"],ans:1,exp:"List comprehension. `range(5)` gives 0-4. `x**2` squares each. Result: `[0, 1, 4, 9, 16]`."},{q:"Difference between `append()` and `extend()`?",opts:["They are identical","`append()` adds one item; `extend()` adds all items from an iterable","extend adds one item; append unpacks","append creates new list"],ans:1,exp:"`[1,2].append([3,4])` → `[1,2,[3,4]]`. `[1,2].extend([3,4])` → `[1,2,3,4]`. Critical distinction when building lists."}]}];
+
+const CERTS=[{id:"github-foundations",title:"GitHub Foundations",provider:"GitHub",cost:"Free",costUSD:0,duration:"2–4 weeks",difficulty:"Beginner",stars:4,url:"https://learn.microsoft.com/en-us/collections/o1njfe825p602p",why:"GitHub is where all code lives."},{id:"aws-ccp",title:"AWS Cloud Practitioner",provider:"AWS",cost:"Paid",costUSD:100,duration:"1–2 months prep",difficulty:"Beginner",stars:5,url:"https://aws.amazon.com/certification/certified-cloud-practitioner/",why:"AWS powers 33% of the internet."},{id:"azure-900",title:"Azure Fundamentals (AZ-900)",provider:"Microsoft",cost:"Paid",costUSD:165,duration:"1 month prep",difficulty:"Beginner",stars:5,url:"https://learn.microsoft.com/en-us/certifications/azure-fundamentals/",why:"Essential for enterprise / MNC environments."},{id:"deeplearning-ml",title:"Machine Learning Specialization",provider:"DeepLearning.AI",cost:"Free (audit)",costUSD:0,duration:"3 months",difficulty:"Intermediate",stars:5,url:"https://www.coursera.org/specializations/machine-learning-introduction",why:"Taught by Andrew Ng. Gold standard ML course."},{id:"google-data",title:"Google Data Analytics Certificate",provider:"Google",cost:"Paid",costUSD:49,duration:"6 months",difficulty:"Beginner",stars:4,url:"https://www.coursera.org/professional-certificates/google-data-analytics",why:"Covers SQL, spreadsheets, R, Tableau, and the data process."},{id:"tensorflow",title:"TensorFlow Developer Certificate",provider:"Google",cost:"Paid",costUSD:100,duration:"2–3 months prep",difficulty:"Intermediate",stars:4,url:"https://www.tensorflow.org/certificate",why:"Practical neural network implementation skills."},{id:"isc2-cc",title:"ISC2 Certified in Cybersecurity (CC)",provider:"ISC2",cost:"Free",costUSD:0,duration:"Self-paced + 3hr exam",difficulty:"Beginner",stars:4,url:"https://www.isc2.org/certifications/cc",why:"Currently free. No reason not to get it."},{id:"meta-frontend",title:"Meta Front-End Developer Cert",provider:"Meta",cost:"Paid",costUSD:49,duration:"7 months",difficulty:"Intermediate",stars:4,url:"https://www.coursera.org/professional-certificates/meta-front-end-developer",why:"Industry-backed React certification from Meta."}];
+
+function ls(key,def){try{const v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch{return def;}}
+function lsSet(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch{}}
+
+let state={
+  user:ls("eos_user",null),
+  completedTopics:ls("eos_topics",[]),
+  quizScores:ls("eos_scores",{}),
+  page:"dashboard",
+  onboardStep:0,
+  onboardName:"",
+  onboardYear:null,
+  onboardPath:null,
+  roadmapYear:null,
+  expandedTopic:null,
+  quizId:null,
+  quizIdx:0,
+  quizAnswers:{},
+  quizPick:null,
+  quizDone:false,
+  certFilter:"all"
+};
+
+function calcReadiness(){
+  if(!state.user)return 0;
+  const path=PATHS.find(p=>p.id===state.user.selectedPath);
+  if(!path)return 0;
+  const all=path.years.flatMap(y=>y.topics);
+  const done=state.completedTopics.filter(id=>all.some(t=>t.id===id)).length;
+  const topicPct=all.length>0?(done/all.length)*100:0;
+  const scores=Object.values(state.quizScores);
+  const avgQuiz=scores.length>0?scores.reduce((a,b)=>a+b,0)/scores.length:0;
+  return Math.round(topicPct*0.6+avgQuiz*0.4);
+}
+
+function render(){document.getElementById("root").innerHTML=buildHTML();bindEvents();}
+
+function buildHTML(){
+  if(!state.user)return buildOnboarding();
+  const nav=`<nav style="background:#fff;border-bottom:1px solid #e2e8f0;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:52px;position:sticky;top:0;z-index:100">
+    <span style="font-weight:700;font-size:16px;letter-spacing:-0.3px">Engineer<span style="color:#2563eb">OS</span></span>
+    <div style="display:flex;gap:2px">${[["dashboard","Dashboard"],["roadmap","Roadmap"],["quiz","Quizzes"],["certs","Certifications"],["readiness","Readiness"]].map(([id,l])=>`<button class="btn-ghost${state.page===id?" active":""}" onclick="nav('${id}')">${l}</button>`).join("")}</div>
+    <button class="btn-ghost" onclick="reset()" style="font-size:11px;color:#94a3b8">Reset</button>
+  </nav>`;
+  let content="";
+  if(state.page==="dashboard")content=buildDash();
+  else if(state.page==="roadmap")content=buildRoadmap();
+  else if(state.page==="quiz")content=buildQuiz();
+  else if(state.page==="certs")content=buildCerts();
+  else if(state.page==="readiness")content=buildReadiness();
+  return nav+`<div class="fade-in">${content}</div>`;
+}
+
+function buildOnboarding(){
+  const s=state.onboardStep;
+  let inner="";
+  if(s===0){inner=`
+    <div style="font-size:28px;margin-bottom:12px">👋</div>
+    <h2 style="font-size:20px;font-weight:700;margin-bottom:6px">Welcome to EngineerOS</h2>
+    <p style="color:#64748b;font-size:14px;margin-bottom:24px;line-height:1.6">Your personal mentor from first year to placement. Answer 3 questions to set up your roadmap.</p>
+    <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px">Your name</label>
+    <input id="ob-name" value="${state.onboardName}" placeholder="e.g. Arjun Kumar" style="width:100%;padding:10px 12px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;margin-bottom:20px;font-family:inherit">
+    <button class="btn-primary" style="width:100%" onclick="obNext()">Continue →</button>`;
+  }else if(s===1){inner=`
+    <p style="color:#94a3b8;font-size:12px;margin-bottom:14px">Step 2 of 3</p>
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:18px">Which year are you in?</h2>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+      ${[1,2,3,4].map(y=>`<button onclick="obYear(${y})" style="padding:13px 16px;border:1.5px solid ${state.onboardYear===y?"#2563eb":"#e2e8f0"};background:${state.onboardYear===y?"#f0f5ff":"#fff"};color:${state.onboardYear===y?"#2563eb":"#374151"};border-radius:8px;text-align:left;cursor:pointer;font-weight:${state.onboardYear===y?600:400};font-size:14px;font-family:inherit">
+        Year ${y} — ${["Foundation","Building Core Skills","Specialising","Placement Ready"][y-1]}
+      </button>`).join("")}
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="obNext()">Continue →</button>`;
+  }else if(s===2){inner=`
+    <p style="color:#94a3b8;font-size:12px;margin-bottom:14px">Step 3 of 3</p>
+    <h2 style="font-size:18px;font-weight:700;margin-bottom:18px">Choose your career path</h2>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+      ${PATHS.map(p=>`<button onclick="obPath('${p.id}')" style="padding:14px 16px;border:1.5px solid ${state.onboardPath===p.id?p.color:"#e2e8f0"};background:${state.onboardPath===p.id?p.color+"12":"#fff"};border-radius:8px;text-align:left;cursor:pointer;font-family:inherit">
+        <div style="font-weight:600;font-size:14px;color:${state.onboardPath===p.id?p.color:"#0f172a"};margin-bottom:3px">${p.icon} ${p.title}</div>
+        <div style="font-size:12px;color:#64748b">${p.tagline}</div>
+      </button>`).join("")}
+    </div>
+    <button class="btn-primary" style="width:100%" onclick="obFinish()">Start my roadmap →</button>`;
+  }
+  return `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f8f9fa;padding:20px">
+    <div class="card" style="max-width:480px;width:100%;padding:36px">${inner}</div>
+  </div>`;
+}
+
+function buildDash(){
+  const u=state.user;
+  const path=PATHS.find(p=>p.id===u.selectedPath);
+  const allTopics=path?path.years.flatMap(y=>y.topics):[];
+  const done=state.completedTopics.filter(id=>allTopics.some(t=>t.id===id)).length;
+  const total=allTopics.length;
+  const pct=total>0?Math.round((done/total)*100):0;
+  const readiness=calcReadiness();
+  const rc=readiness>=70?"#059669":readiness>=40?"#d97706":"#dc2626";
+  const currentYear=path?.years.find(y=>y.topics.some(t=>!state.completedTopics.includes(t.id)))||path?.years[path.years.length-1];
+  const nextTopics=currentYear?.topics.filter(t=>!state.completedTopics.includes(t.id)).slice(0,2)||[];
+  const qCount=Object.keys(state.quizScores).length;
+
+  const stats=[
+    {l:"Progress",v:`${pct}%`,sub:`${done}/${total} topics`,c:"#2563eb"},
+    {l:"Readiness",v:`${readiness}%`,sub:readiness>=60?"Ready to apply!":"Keep going",c:rc},
+    {l:"Quizzes taken",v:qCount,sub:`of ${QUIZZES.length} available`,c:"#7c3aed"},
+    {l:"Current year",v:`Year ${u.year}`,sub:["Foundation","Core Stack","Specialisation","Placement"][u.year-1],c:"#0f172a"}
+  ];
+
+  return `<div style="max-width:1060px;margin:0 auto;padding:28px 20px">
+    <h1 style="font-size:26px;font-weight:700;letter-spacing:-0.4px;margin-bottom:4px">Welcome back, ${u.name} 👋</h1>
+    <p style="color:#64748b;font-size:14px;margin-bottom:24px">${path?.title} · Year ${u.year}</p>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px">
+      ${stats.map(s=>`<div class="card" style="padding:16px">
+        <div style="font-size:11px;color:#94a3b8;font-weight:500;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px">${s.l}</div>
+        <div style="font-size:24px;font-weight:700;color:${s.c};letter-spacing:-0.4px">${s.v}</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:2px">${s.sub}</div>
+      </div>`).join("")}
+    </div>
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+      <div class="card">
+        <div style="font-size:15px;font-weight:600;margin-bottom:16px">Path progress — ${path?.title}</div>
+        <div style="margin-bottom:12px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-size:13px;color:#64748b">Overall</span>
+            <span style="font-size:13px;font-weight:600">${done}/${total} topics</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${pct}%;background:${path?.color}"></div></div>
+        </div>
+        ${path?.years.map(y=>{
+          const yd=y.topics.filter(t=>state.completedTopics.includes(t.id)).length;
+          const yp=Math.round((yd/y.topics.length)*100);
+          return`<div style="margin-bottom:8px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:3px">
+              <span style="font-size:12px;color:#64748b">Year ${y.year} — ${y.theme}</span>
+              <span style="font-size:12px;color:#94a3b8">${yd}/${y.topics.length}</span>
+            </div>
+            <div class="prog-bar"><div class="prog-fill" style="width:${yp}%;background:${path?.color}99"></div></div>
+          </div>`;
+        }).join("")}
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div class="card" style="padding:16px">
+          <div style="font-size:13px;font-weight:600;margin-bottom:12px">Up next for you</div>
+          ${nextTopics.length===0?`<p style="font-size:13px;color:#64748b">🎉 Year complete!</p>`:
+          nextTopics.map(t=>`<div style="padding:9px 11px;background:#f8faff;border-radius:8px;margin-bottom:7px">
+            <div style="font-size:12px;font-weight:600;color:#1e40af;margin-bottom:2px">${t.title}</div>
+            <div style="font-size:11px;color:#64748b">${t.estimatedWeeks}w</div>
+          </div>`).join("")}
+        </div>
+        <div class="card" style="padding:16px;background:${readiness>=60?"#f0fdf4":"#fff7ed"};border-color:${readiness>=60?"#bbf7d0":"#fed7aa"}">
+          <div style="font-size:12px;font-weight:600;color:${rc};margin-bottom:4px">${readiness>=60?"✓ Internship ready":"⚡ Build readiness"}</div>
+          <div style="font-size:36px;font-weight:700;color:${rc}">${readiness}%</div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:4px">${readiness<60?"Complete more topics & quizzes":"You have skills to apply now"}</div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildRoadmap(){
+  const path=PATHS.find(p=>p.id===state.user.selectedPath);
+  if(!path)return"";
+  const ay=state.roadmapYear||state.user.year||1;
+  const yearData=path.years.find(y=>y.year===ay);
+  return`<div style="max-width:1060px;margin:0 auto;padding:28px 20px">
+    <h1 style="font-size:24px;font-weight:700;margin-bottom:4px">${path.icon} ${path.title} Roadmap</h1>
+    <p style="color:#64748b;font-size:14px;margin-bottom:20px">${path.tagline}</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px">
+      ${path.years.map(y=>{
+        const yd=y.topics.filter(t=>state.completedTopics.includes(t.id)).length;
+        const yp=Math.round((yd/y.topics.length)*100);
+        return`<button class="pill" style="background:${ay===y.year?path.color:"#f1f5f9"};color:${ay===y.year?"#fff":"#64748b"};font-weight:${ay===y.year?600:400}" onclick="setYear(${y.year})">
+          Year ${y.year} — ${y.theme} <span style="font-size:11px;opacity:0.8">(${yp}%)</span>
+        </button>`;
+      }).join("")}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${yearData?.topics.map(t=>{
+        const done=state.completedTopics.includes(t.id);
+        const open=state.expandedTopic===t.id;
+        return`<div class="topic-card" style="border-color:${done?path.color+"60":"#e2e8f0"};background:${done?path.color+"07":"#fff"}">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:flex-start;gap:12px;flex:1">
+              <button onclick="toggleTopic('${t.id}')" style="width:22px;height:22px;min-width:22px;border-radius:50%;background:${done?path.color:"#fff"};border:2px solid ${done?path.color:"#cbd5e1"};color:#fff;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:2px;font-family:inherit">${done?"✓":""}</button>
+              <div>
+                <div style="font-weight:600;font-size:14px;color:${done?"#94a3b8":"#0f172a"};text-decoration:${done?"line-through":"none"};margin-bottom:4px">${t.title}</div>
+                <span class="tag">${t.estimatedWeeks}w${done?' · <span style="color:#059669">Done</span>':""}</span>
+              </div>
+            </div>
+            <button onclick="toggleExpand('${t.id}')" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:20px;padding:0;line-height:1;font-family:inherit">${open?"−":"+"}</button>
+          </div>
+          ${open?`<div style="margin-top:14px;padding-top:14px;border-top:1px solid #f1f5f9" class="fade-in">
+            <div style="background:#f8f9fa;border-radius:8px;padding:12px;margin-bottom:12px">
+              <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:0.5px;margin-bottom:4px">WHY THIS MATTERS</div>
+              <p style="font-size:13px;color:#374151;line-height:1.6;margin:0">${t.why}</p>
+            </div>
+            <div style="padding:9px 12px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;font-size:13px;color:#92400e;margin-bottom:12px">
+              💡 <strong>Project:</strong> ${t.projectIdea}
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              ${t.resources.map(r=>`<a href="${r.url}" target="_blank" class="resource-link">↗ ${r.label}</a>`).join("")}
+            </div>
+          </div>`:""}
+        </div>`;
+      }).join("")}
+    </div>
+  </div>`;
+}
+
+function buildQuiz(){
+  if(!state.quizId){
+    return`<div style="max-width:760px;margin:0 auto;padding:28px 20px">
+      <h1 style="font-size:24px;font-weight:700;margin-bottom:4px">Knowledge checks</h1>
+      <p style="color:#64748b;font-size:14px;margin-bottom:24px">Test what you know. See exactly where the gaps are.</p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        ${QUIZZES.map(q=>{
+          const prev=state.quizScores[q.id];
+          const c=prev>=80?"#059669":prev>=60?"#d97706":"#dc2626";
+          return`<div class="card">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+              <div>
+                <div style="font-weight:600;font-size:15px;margin-bottom:3px">${q.title}</div>
+                <div style="font-size:13px;color:#64748b">${q.questions.length} questions · MCQ</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px">
+                ${prev!==undefined?`<span style="background:${c}18;color:${c};border:1px solid ${c}30;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600">Last: ${prev}%</span>`:""}
+                <button class="btn-primary" onclick="startQuiz('${q.id}')">${prev!==undefined?"Retry":"Start quiz"}</button>
+              </div>
+            </div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>`;
+  }
+  const quiz=QUIZZES.find(q=>q.id===state.quizId);
+  if(state.quizDone){
+    const score=state.quizScores[state.quizId]||0;
+    const correct=quiz.questions.filter((q,i)=>state.quizAnswers[i]===q.ans).length;
+    const wrong=quiz.questions.filter((q,i)=>state.quizAnswers[i]!==q.ans);
+    const sc=score>=80?"#059669":score>=60?"#d97706":"#dc2626";
+    return`<div style="max-width:580px;margin:0 auto;padding:28px 20px">
+      <div class="card" style="padding:36px;text-align:center">
+        <div style="font-size:44px;margin-bottom:12px">${score>=80?"🎯":score>=60?"📈":"📚"}</div>
+        <h2 style="font-size:18px;font-weight:700;margin-bottom:4px">Quiz complete</h2>
+        <p style="color:#64748b;font-size:13px;margin-bottom:12px">${quiz.title}</p>
+        <div style="font-size:56px;font-weight:700;color:${sc};letter-spacing:-2px">${score}%</div>
+        <p style="color:#64748b;font-size:13px;margin-bottom:24px">${correct} of ${quiz.questions.length} correct</p>
+        ${wrong.length>0?`<div style="text-align:left;margin-bottom:20px">
+          <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:#dc2626">Review these concepts:</div>
+          ${wrong.map(q=>`<div style="padding:10px 12px;background:#fef2f2;border-radius:8px;margin-bottom:8px;font-size:13px;text-align:left">
+            <strong>${q.q}</strong>
+            <p style="margin:5px 0 0;color:#374151;line-height:1.5">✓ ${q.exp}</p>
+          </div>`).join("")}
+        </div>`:""}
+        <div style="display:flex;gap:10px;justify-content:center">
+          <button style="background:#f1f5f9;color:#374151;border:none;border-radius:8px;padding:9px 16px;font-weight:600;font-size:13px;cursor:pointer;font-family:inherit" onclick="backToQuizList()">← All quizzes</button>
+          <button class="btn-primary" onclick="startQuiz('${quiz.id}')">Retry</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  const q=quiz.questions[state.quizIdx];
+  const pick=state.quizPick;
+  const pct=((state.quizIdx+1)/quiz.questions.length)*100;
+  return`<div style="max-width:580px;margin:0 auto;padding:28px 20px">
+    <div class="card" style="padding:24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <button class="btn-ghost" onclick="backToQuizList()">← Back</button>
+        <span style="font-size:13px;color:#64748b">${state.quizIdx+1} / ${quiz.questions.length}</span>
+      </div>
+      <div class="prog-bar" style="margin-bottom:20px"><div class="prog-fill" style="width:${pct}%;background:#2563eb"></div></div>
+      <div style="font-size:15px;font-weight:600;margin-bottom:18px;line-height:1.5">${q.q}</div>
+      <div style="display:flex;flex-direction:column;gap:9px;margin-bottom:18px">
+        ${q.opts.map((opt,i)=>{
+          let bg="#fff",border="#e2e8f0",col="#374151";
+          if(pick!==null){
+            if(i===q.ans){bg="#f0fdf4";border="#86efac";col="#166534";}
+            else if(i===pick&&pick!==q.ans){bg="#fef2f2";border="#fca5a5";col="#991b1b";}
+          }
+          return`<button class="opt-btn" onclick="answerQ(${i})" style="background:${bg};border:1.5px solid ${border};color:${col};cursor:${pick!==null?"default":"pointer"}">${opt}</button>`;
+        }).join("")}
+      </div>
+      ${pick!==null?`<div style="padding:12px;background:#f8f9fa;border-radius:8px;margin-bottom:14px;font-size:13px;color:#374151;line-height:1.6">
+        <strong>Explanation:</strong> ${q.exp}
+      </div>
+      <button class="btn-primary" style="width:100%" onclick="nextQ()">${state.quizIdx<quiz.questions.length-1?"Next question →":"See results →"}</button>`:""}
+    </div>
+  </div>`;
+}
+
+function buildCerts(){
+  const f=state.certFilter;
+  const filtered=f==="free"?CERTS.filter(c=>c.costUSD===0):CERTS;
+  return`<div style="max-width:1060px;margin:0 auto;padding:28px 20px">
+    <h1 style="font-size:24px;font-weight:700;margin-bottom:4px">Certifications</h1>
+    <p style="color:#64748b;font-size:14px;margin-bottom:20px">Curated. Verified industry value. No noise.</p>
+    <div style="display:flex;gap:8px;margin-bottom:20px">
+      ${[["all","All certifications"],["free","Free only"]].map(([id,l])=>`<button class="pill" style="background:${f===id?"#2563eb":"#f1f5f9"};color:${f===id?"#fff":"#64748b"};font-weight:${f===id?600:400}" onclick="setCertFilter('${id}')">${l}</button>`).join("")}
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      ${filtered.map(c=>`<div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap">
+              <span style="font-weight:600;font-size:15px">${c.title}</span>
+              <span class="tag">${c.provider}</span>
+              ${c.costUSD===0?`<span style="background:#dcfce7;color:#059669;border-radius:5px;padding:2px 8px;font-size:11px;font-weight:600">Free</span>`:""}
+            </div>
+            <p style="font-size:13px;color:#64748b;margin-bottom:8px">${c.why}</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span class="tag">${c.difficulty}</span>
+              <span class="tag">${c.duration}</span>
+              <span class="tag">${"★".repeat(c.stars)}${"☆".repeat(5-c.stars)}</span>
+              <span class="tag">${c.cost}</span>
+            </div>
+          </div>
+          <a href="${c.url}" target="_blank" style="background:#2563eb;color:#fff;border:none;border-radius:8px;padding:9px 16px;font-weight:600;font-size:13px;white-space:nowrap;display:inline-block">View cert ↗</a>
+        </div>
+      </div>`).join("")}
+    </div>
+  </div>`;
+}
+
+function buildReadiness(){
+  const path=PATHS.find(p=>p.id===state.user.selectedPath);
+  const allTopics=path?path.years.flatMap(y=>y.topics):[];
+  const done=state.completedTopics.filter(id=>allTopics.some(t=>t.id===id)).length;
+  const total=allTopics.length;
+  const topicPct=total>0?Math.round((done/total)*100):0;
+  const scores=Object.values(state.quizScores);
+  const avgQuiz=scores.length>0?Math.round(scores.reduce((a,b)=>a+b,0)/scores.length):0;
+  const readiness=calcReadiness();
+  const rc=readiness>=70?"#059669":readiness>=40?"#d97706":"#dc2626";
+  const checks=[
+    {l:"Topics completed",v:topicPct,t:70,sub:`${done} of ${total} topics done`},
+    {l:"Quiz average",v:avgQuiz,t:70,sub:`${scores.length} quiz${scores.length!==1?"zes":""} taken`},
+    {l:"Overall readiness",v:readiness,t:60,sub:"60% topics + 40% quizzes"}
+  ];
+  const recs=[
+    done<total*0.7&&"Complete at least 70% of your path's topics before applying.",
+    scores.length<QUIZZES.length&&`Take all ${QUIZZES.length} quizzes to improve your readiness score.`,
+    avgQuiz<70&&"Review weak areas from quiz explanations and retry.",
+    done>=total*0.7&&avgQuiz>=70&&"You're ready. Start applying to internships and building your portfolio."
+  ].filter(Boolean);
+  return`<div style="max-width:760px;margin:0 auto;padding:28px 20px">
+    <h1 style="font-size:24px;font-weight:700;margin-bottom:4px">Internship readiness</h1>
+    <p style="color:#64748b;font-size:14px;margin-bottom:24px">An honest score based on what you've actually done, not what you plan to do.</p>
+    <div style="display:flex;justify-content:center;margin-bottom:28px">
+      <div class="card" style="text-align:center;padding:36px 48px;min-width:220px">
+        <div style="font-size:10px;font-weight:700;color:#94a3b8;letter-spacing:1px;margin-bottom:8px;text-transform:uppercase">Readiness score</div>
+        <div style="font-size:72px;font-weight:700;color:${rc};letter-spacing:-3px;line-height:1">${readiness}</div>
+        <div style="font-size:15px;color:#94a3b8;margin-top:4px">/ 100</div>
+        <div style="margin-top:10px;font-size:14px;font-weight:600;color:${rc}">${readiness>=70?"✓ Internship ready":readiness>=40?"⚡ Getting there":"📚 Keep learning"}</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+      ${checks.map(c=>{
+        const cc=c.v>=c.t?"#059669":"#d97706";
+        return`<div class="card">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="font-size:14px;font-weight:500">${c.l}</span>
+            <span style="font-size:14px;font-weight:700;color:${cc}">${c.v}%</span>
+          </div>
+          <div class="prog-bar"><div class="prog-fill" style="width:${c.v}%;background:${cc}"></div></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:5px">${c.sub} · Target: ${c.t}%</div>
+        </div>`;
+      }).join("")}
+    </div>
+    <div class="card">
+      <div style="font-size:15px;font-weight:600;margin-bottom:12px">Recommendations</div>
+      ${recs.map(r=>`<div style="display:flex;gap:10px;margin-bottom:8px;font-size:13px;color:#374151;line-height:1.6">
+        <span style="color:#2563eb;font-weight:700;flex-shrink:0">→</span>${r}
+      </div>`).join("")}
+    </div>
+  </div>`;
+}
+
+window.nav=function(p){state.page=p;render();}
+window.reset=function(){
+  if(confirm("Reset all progress? This cannot be undone.")){
+    state.user=null;state.completedTopics=[];state.quizScores={};
+    state.quizId=null;state.page="dashboard";
+    lsSet("eos_user",null);lsSet("eos_topics",[]);lsSet("eos_scores",{});
+    render();
+  }
+}
+window.obNext=function(){
+  if(state.onboardStep===0){
+    const n=document.getElementById("ob-name")?.value?.trim();
+    if(n){state.onboardName=n;state.onboardStep=1;render();}
+  }else if(state.onboardStep===1){
+    if(state.onboardYear){state.onboardStep=2;render();}
+  }
+}
+window.obYear=function(y){state.onboardYear=y;render();}
+window.obPath=function(p){state.onboardPath=p;render();}
+window.obFinish=function(){
+  if(!state.onboardPath)return;
+  state.user={name:state.onboardName,year:state.onboardYear,selectedPath:state.onboardPath};
+  state.roadmapYear=state.onboardYear;
+  lsSet("eos_user",state.user);
+  state.page="dashboard";render();
+}
+window.toggleTopic=function(id){
+  state.completedTopics=state.completedTopics.includes(id)?state.completedTopics.filter(t=>t!==id):[...state.completedTopics,id];
+  lsSet("eos_topics",state.completedTopics);render();
+}
+window.toggleExpand=function(id){state.expandedTopic=state.expandedTopic===id?null:id;render();}
+window.setYear=function(y){state.roadmapYear=y;state.expandedTopic=null;render();}
+window.startQuiz=function(id){state.quizId=id;state.quizIdx=0;state.quizAnswers={};state.quizPick=null;state.quizDone=false;render();}
+window.backToQuizList=function(){state.quizId=null;render();}
+window.answerQ=function(i){
+  if(state.quizPick!==null)return;
+  state.quizPick=i;
+  state.quizAnswers={...state.quizAnswers,[state.quizIdx]:i};
+  render();
+}
+window.nextQ=function(){
+  const quiz=QUIZZES.find(q=>q.id===state.quizId);
+  if(state.quizIdx<quiz.questions.length-1){
+    state.quizIdx++;state.quizPick=null;render();
+  }else{
+    const correct=quiz.questions.filter((q,i)=>state.quizAnswers[i]===q.ans).length;
+    const score=Math.round((correct/quiz.questions.length)*100);
+    state.quizScores={...state.quizScores,[state.quizId]:score};
+    lsSet("eos_scores",state.quizScores);
+    state.quizDone=true;render();
+  }
+}
+window.setCertFilter=function(f){state.certFilter=f;render();}
+
+function bindEvents(){
+  const inp=document.getElementById("ob-name");
+  if(inp)inp.addEventListener("keydown",e=>{if(e.key==="Enter")window.obNext();});
+}
+
+render();
+</script>
